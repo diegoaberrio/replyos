@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -33,9 +34,19 @@ function PrivateLayout({ children }) {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   async function handleLogout() {
     await logout();
     navigate('/login', { replace: true });
+  }
+
+  function closeMobileMenu() {
+    setIsMobileMenuOpen(false);
+  }
+
+  function toggleMobileMenu() {
+    setIsMobileMenuOpen((prev) => !prev);
   }
 
   return (
@@ -43,7 +54,60 @@ function PrivateLayout({ children }) {
       <div className="app-background" />
 
       <section className="private-app-shell private-app-shell--wow">
-        <aside className="private-sidebar private-sidebar--wow">
+        <header className="private-mobile-topbar">
+          <div className="private-mobile-brand">
+            <span className="private-mobile-brand__mark" aria-hidden="true">
+              ✦
+            </span>
+
+            <div>
+              <strong>ReplyOS Admin</strong>
+              <span>Panel privado</span>
+            </div>
+          </div>
+
+          <button
+            className={`private-mobile-menu-btn ${
+              isMobileMenuOpen ? 'private-mobile-menu-btn--open' : ''
+            }`}
+            type="button"
+            onClick={toggleMobileMenu}
+            aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={isMobileMenuOpen}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </header>
+
+        {isMobileMenuOpen ? (
+          <button
+            className="private-mobile-overlay"
+            type="button"
+            aria-label="Cerrar menú lateral"
+            onClick={closeMobileMenu}
+          />
+        ) : null}
+
+        <aside
+          className={`private-sidebar private-sidebar--wow private-sidebar--mobile ${
+            isMobileMenuOpen ? 'private-sidebar--mobile-open' : ''
+          }`}
+        >
+          <div className="private-sidebar-mobile-head">
+            <span className="mini-chip">Menú privado</span>
+
+            <button
+              className="private-sidebar-close"
+              type="button"
+              onClick={closeMobileMenu}
+              aria-label="Cerrar menú"
+            >
+              ×
+            </button>
+          </div>
+
           <div className="private-brand private-brand--wow">
             <div className="private-brand-mark" aria-hidden="true">
               ✦
@@ -83,6 +147,7 @@ function PrivateLayout({ children }) {
                     isActive ? 'private-nav-item--active' : ''
                   }`}
                   to={item.to}
+                  onClick={closeMobileMenu}
                 >
                   <span className="private-nav-item__icon" aria-hidden="true">
                     {item.icon}

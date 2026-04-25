@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   clearPublicChatSession,
   getPublicChatSession,
@@ -69,6 +69,98 @@ function PublicChatPage() {
   const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
 
   const [openAccordion, setOpenAccordion] = useState('contact');
+  const [floatingAction, setFloatingAction] = useState(null);
+
+  const chatComposerRef = useRef(null);
+  const chatMessagesRef = useRef(null);
+  const leadSectionRef = useRef(null);
+  const requestSectionRef = useRef(null);
+
+  function scrollToElement(element) {
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  }
+
+  function scrollChatToLatestEvent() {
+    const chatMessagesElement = chatMessagesRef.current;
+
+    if (!chatMessagesElement) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      chatMessagesElement.scrollTo({
+        top: chatMessagesElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    });
+  }
+
+  function showFloatingAction(type) {
+    if (type === 'lead') {
+      setFloatingAction({
+        type: 'lead',
+        icon: '◈',
+        title: 'Completar datos',
+        copy: 'El agente ya puede registrar tu contacto.',
+      });
+      return;
+    }
+
+    if (type === 'agenda') {
+      setFloatingAction({
+        type: 'agenda',
+        icon: '✓',
+        title: 'Ir a agenda',
+        copy: 'Registra tu preferencia de contacto.',
+      });
+      return;
+    }
+
+    if (type === 'chat') {
+      setFloatingAction({
+        type: 'chat',
+        icon: '✉',
+        title: 'Volver al chat',
+        copy: 'Continúa la conversación con el agente.',
+      });
+      return;
+    }
+
+    setFloatingAction(null);
+  }
+
+  function handleFloatingActionClick() {
+    if (!floatingAction) {
+      return;
+    }
+
+    if (floatingAction.type === 'lead') {
+      setOpenAccordion('lead');
+      window.setTimeout(() => scrollToElement(leadSectionRef.current), 180);
+      setFloatingAction(null);
+      return;
+    }
+
+    if (floatingAction.type === 'agenda') {
+      setOpenAccordion('agenda');
+      window.setTimeout(() => scrollToElement(requestSectionRef.current), 180);
+      setFloatingAction(null);
+      return;
+    }
+
+    if (floatingAction.type === 'chat') {
+      setOpenAccordion('contact');
+      window.setTimeout(() => scrollToElement(chatComposerRef.current), 180);
+      setFloatingAction(null);
+    }
+  }
 
   function applyUiHints(nextHints) {
     const safeHints = {
@@ -81,16 +173,22 @@ function PublicChatPage() {
 
     if (safeHints.next_recommended_step === 'request') {
       setOpenAccordion('agenda');
+      showFloatingAction('agenda');
       return;
     }
 
     if (safeHints.next_recommended_step === 'lead') {
       setOpenAccordion('lead');
+      showFloatingAction('lead');
       return;
     }
 
     setOpenAccordion('contact');
   }
+
+  useEffect(() => {
+    scrollChatToLatestEvent();
+  }, [messages, isSending]);
 
   useEffect(() => {
     let ignore = false;
@@ -232,6 +330,7 @@ function PublicChatPage() {
       setIsSending(true);
       setErrorMessage('');
       setSuccessMessage('');
+      setFloatingAction(null);
       setMessageInput('');
 
       setMessages((prev) => [...prev, optimisticUserMessage]);
@@ -289,6 +388,7 @@ function PublicChatPage() {
     if (!leadForm.email.trim() && !leadForm.phone.trim()) {
       setErrorMessage('Debes indicar al menos email o teléfono.');
       setOpenAccordion('lead');
+      showFloatingAction('lead');
       return;
     }
 
@@ -296,16 +396,19 @@ function PublicChatPage() {
       setIsLeadSubmitting(true);
       setErrorMessage('');
       setSuccessMessage('');
+      setFloatingAction(null);
 
       await createPublicLead(publicIdentifier, leadForm);
 
       setSuccessMessage('Tus datos han quedado registrados correctamente.');
       setOpenAccordion('agenda');
+      showFloatingAction('agenda');
     } catch (error) {
       setErrorMessage(
         error?.error?.message || 'No se pudieron registrar tus datos.'
       );
       setOpenAccordion('lead');
+      showFloatingAction('lead');
     } finally {
       setIsLeadSubmitting(false);
     }
@@ -331,6 +434,7 @@ function PublicChatPage() {
       setIsRequestSubmitting(true);
       setErrorMessage('');
       setSuccessMessage('');
+      setFloatingAction(null);
 
       await createPublicCommercialRequest(publicIdentifier, requestForm);
 
@@ -338,11 +442,13 @@ function PublicChatPage() {
         'Tu solicitud comercial ha sido registrada correctamente.'
       );
       setOpenAccordion('contact');
+      showFloatingAction('chat');
     } catch (error) {
       setErrorMessage(
         error?.error?.message || 'No se pudo registrar la solicitud comercial.'
       );
       setOpenAccordion('agenda');
+      showFloatingAction('agenda');
     } finally {
       setIsRequestSubmitting(false);
     }
@@ -408,7 +514,13 @@ function PublicChatPage() {
 
         {!isBooting ? (
           <>
-            <div className="chat-messages chat-messages--real chat-messages--wow">
+            <div
+              ref={chatMessagesRef}
+              className="chat-messages chat-messages--real chat-messages--wow chat-messages--focus-feed"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text"
+            >
               {messages.map((message, index) => {
                 const isAgent = message.sender_type === 'agent';
 
@@ -466,7 +578,11 @@ function PublicChatPage() {
               ) : null}
             </div>
 
-            <form className="chat-composer chat-composer--wow" onSubmit={handleSendMessage}>
+            <form
+              ref={chatComposerRef}
+              className="chat-composer chat-composer--wow"
+              onSubmit={handleSendMessage}
+            >
               <div className="chat-input-shell">
                 <span className="chat-input-shell__icon" aria-hidden="true">
                   ✉
@@ -574,7 +690,10 @@ function PublicChatPage() {
               </div>
             </section>
 
-            <section className="accordion-card accordion-card--flow">
+            <section
+              ref={leadSectionRef}
+              className="accordion-card accordion-card--flow"
+            >
               <button
                 type="button"
                 className={`accordion-trigger ${
@@ -680,7 +799,10 @@ function PublicChatPage() {
               </div>
             </section>
 
-            <section className="accordion-card accordion-card--flow">
+            <section
+              ref={requestSectionRef}
+              className="accordion-card accordion-card--flow"
+            >
               <button
                 type="button"
                 className={`accordion-trigger ${
@@ -799,6 +921,34 @@ function PublicChatPage() {
           </div>
         </aside>
       </div>
+
+      {floatingAction ? (
+        <div className="mobile-flow-nudge" role="status" aria-live="polite">
+          <button
+            className="mobile-flow-nudge__button"
+            type="button"
+            onClick={handleFloatingActionClick}
+          >
+            <span className="mobile-flow-nudge__icon" aria-hidden="true">
+              {floatingAction.icon}
+            </span>
+
+            <span className="mobile-flow-nudge__content">
+              <strong>{floatingAction.title}</strong>
+              <small>{floatingAction.copy}</small>
+            </span>
+          </button>
+
+          <button
+            className="mobile-flow-nudge__close"
+            type="button"
+            onClick={() => setFloatingAction(null)}
+            aria-label="Ocultar sugerencia"
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

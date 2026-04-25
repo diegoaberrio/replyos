@@ -9005,3 +9005,381 @@ canvas {
     animation: none !important;
   }
 }
+
+/* =========================================================
+   [PRIVATE MOBILE NAV]
+   Used by: PrivateLayout.jsx.
+   Menú hamburguesa móvil para panel administrador sin alterar
+   rutas, sesión, navegación ni layout desktop.
+   ========================================================= */
+
+.private-mobile-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 42;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(106, 227, 255, 0.13);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(18, 28, 46, 0.92), rgba(10, 18, 32, 0.84));
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-card);
+}
+
+.private-mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.private-mobile-brand__mark {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  color: var(--text-inverse);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-strong));
+  box-shadow: 0 14px 30px rgba(106, 227, 255, 0.16);
+  font-weight: 900;
+}
+
+.private-mobile-brand strong {
+  display: block;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.private-mobile-brand span:not(.private-mobile-brand__mark) {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.private-mobile-menu-btn {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  gap: 5px;
+  place-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(106, 227, 255, 0.16);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at top, rgba(106, 227, 255, 0.12), transparent 38%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+}
+
+.private-mobile-menu-btn span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  transition:
+    transform var(--duration-fast) var(--ease-premium),
+    opacity var(--duration-fast) var(--ease-premium);
+}
+
+.private-mobile-menu-btn--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.private-mobile-menu-btn--open span:nth-child(2) {
+  opacity: 0;
+}
+
+.private-mobile-menu-btn--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.private-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(5px);
+  animation: replyos-overlay-enter var(--duration-med) var(--ease-premium) both;
+}
+
+.private-sidebar-mobile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.private-sidebar-close {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(106, 227, 255, 0.14);
+  border-radius: 14px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+@keyframes replyos-overlay-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1099px) {
+  .private-app-shell--wow {
+    display: block;
+  }
+
+  .private-sidebar--mobile {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    bottom: 12px;
+    z-index: 60;
+    width: min(88vw, 360px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    transform: translateX(calc(-100% - 24px));
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--duration-med) var(--ease-premium),
+      opacity var(--duration-med) var(--ease-premium),
+      visibility var(--duration-med) var(--ease-premium);
+  }
+
+  .private-sidebar--mobile-open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .private-nav--wow {
+    padding-bottom: 12px;
+  }
+
+  .private-main--wow {
+    display: grid;
+    gap: 16px;
+  }
+
+  .private-main-header--wow {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1100px) {
+  .private-mobile-topbar,
+  .private-mobile-overlay,
+  .private-sidebar-mobile-head {
+    display: none;
+  }
+
+  .private-sidebar--mobile {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 420px) {
+  .private-mobile-topbar {
+    border-radius: var(--radius-md);
+  }
+
+  .private-sidebar--mobile {
+    width: min(92vw, 340px);
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+  }
+
+  .private-brand--wow {
+    align-items: flex-start;
+  }
+
+  .private-brand-copy {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-mobile-overlay,
+  .private-sidebar--mobile,
+  .private-mobile-menu-btn span {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
+/* =========================================================
+   [PUBLIC CHAT MOBILE NUDGE]
+   Used by: PublicChatPage.jsx.
+   Burbuja flotante móvil para guiar al formulario sin forzar
+   scroll automático ni interrumpir la lectura del chat.
+   ========================================================= */
+
+.mobile-flow-nudge {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 80;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(106, 227, 255, 0.18);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at left, rgba(106, 227, 255, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(18, 28, 46, 0.96), rgba(10, 18, 32, 0.92));
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(106, 227, 255, 0.06);
+  animation: replyos-mobile-nudge-enter var(--duration-med) var(--ease-premium) both;
+}
+
+.mobile-flow-nudge__button {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+}
+
+.mobile-flow-nudge__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  color: var(--text-inverse);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-strong));
+  box-shadow: 0 16px 34px rgba(106, 227, 255, 0.18);
+  font-weight: 900;
+}
+
+.mobile-flow-nudge__content {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mobile-flow-nudge__content strong {
+  color: var(--text-primary);
+  font-size: 0.94rem;
+  line-height: 1.1;
+}
+
+.mobile-flow-nudge__content small {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-flow-nudge__close {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.mobile-flow-nudge__button:active,
+.mobile-flow-nudge__close:active {
+  transform: scale(0.985);
+}
+
+@keyframes replyos-mobile-nudge-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-flow-nudge {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .mobile-flow-nudge {
+    left: 10px;
+    right: 10px;
+    grid-template-columns: minmax(0, 1fr) 38px;
+    border-radius: 20px;
+  }
+
+  .mobile-flow-nudge__button {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .mobile-flow-nudge__icon,
+  .mobile-flow-nudge__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-flow-nudge {
+    animation: none !important;
+  }
+}
+/* =========================================================
+   [PUBLIC CHAT AUTO FOCUS]
+   Used by: PublicChatPage.jsx.
+   Mantiene visible el último evento generado dentro de la
+   ventana de chat: mensaje del usuario, escribiendo y agente.
+   ========================================================= */
+
+.chat-messages--focus-feed {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.chat-messages--focus-feed .message-bubble:last-child {
+  scroll-margin-bottom: 18px;
+}
