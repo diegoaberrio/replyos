@@ -1,20 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const valueItems = [
   {
-    icon: '✦',
-    title: 'Contexto real',
-    text: 'Responde usando información vigente del negocio.',
+    icon: "✦",
+    title: "Contexto real",
+    text: "Responde usando información vigente del negocio.",
   },
   {
-    icon: '◈',
-    title: 'Lead listo',
-    text: 'Capta datos comerciales sin fricción.',
+    icon: "◈",
+    title: "Lead listo",
+    text: "Capta datos comerciales sin fricción.",
   },
   {
-    icon: '→',
-    title: 'Conversión guiada',
-    text: 'Orienta hacia cita, llamada o contacto.',
+    icon: "→",
+    title: "Conversión guiada",
+    text: "Orienta hacia cita, llamada o contacto.",
   },
 ];
 
@@ -33,10 +33,14 @@ function LandingPage() {
             <p className="hero-copy">
               ReplyOS ayuda a una empresa a responder consultas, resolver dudas,
               captar datos relevantes y guiar cada interacción hacia una acción
-              útil: una cita, una llamada, una visita o una solicitud de contacto.
+              útil: una cita, una llamada, una visita o una solicitud de
+              contacto.
             </p>
 
-            <div className="landing-value-grid" aria-label="Ventajas principales">
+            <div
+              className="landing-value-grid"
+              aria-label="Ventajas principales"
+            >
               {valueItems.map((item) => (
                 <article className="landing-value-item" key={item.title}>
                   <span className="landing-value-icon" aria-hidden="true">
@@ -54,10 +58,6 @@ function LandingPage() {
             <div className="hero-actions">
               <Link className="primary-btn" to="/chat">
                 Probar el chat
-              </Link>
-
-              <Link className="secondary-btn" to="/login">
-                Entrar al panel
               </Link>
             </div>
           </div>
