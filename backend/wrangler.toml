@@ -1,0 +1,10 @@
+﻿name = "replyos-api"
+main = "src/worker.js"
+compatibility_date = "2026-04-25"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NODE_ENV = "production"
+APP_NAME = "ReplyOS"
+PUBLIC_APP_URL = "https://replyos.diegoincode.com"
+CORS_ORIGIN = "https://replyos.diegoincode.com"
