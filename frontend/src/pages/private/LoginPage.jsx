@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 const INITIAL_FORM = {
-  email: 'admin@replyos.com',
-  password: 'Admin12345',
+  email: '',
+  password: '',
 };
 
 function LoginPage() {
@@ -86,9 +86,10 @@ function LoginPage() {
                 <input
                   name="email"
                   type="email"
-                  placeholder="admin@replyos.com"
+                  placeholder="tu@email.com"
                   value={form.email}
                   onChange={handleChange}
+                  required
                 />
               </div>
             </label>
@@ -105,6 +106,7 @@ function LoginPage() {
                   placeholder="••••••••••"
                   value={form.password}
                   onChange={handleChange}
+                  required
                 />
               </div>
             </label>
