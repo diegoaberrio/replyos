@@ -1,0 +1,28 @@
+export const mockBusinessProfileResponse = {
+  success: true,
+  data: {
+    id: 'business-001',
+    business_name: 'ReplyOS Demo',
+    legal_name: 'ReplyOS Demo SL',
+    business_email: 'info@replyos.com',
+    business_phone: '+34600000000',
+    website_url: 'https://replyos.com',
+    description:
+      'Agente comercial con IA para atención inicial, captación de leads y conversión.',
+    address_line: 'Calle Demo 123',
+    city: 'Madrid',
+    region: 'Madrid',
+    country: 'España',
+    postal_code: '28001',
+    attention_zones: 'Madrid, Guadalajara',
+    business_hours: 'Lunes a viernes de 9:00 a 18:00',
+    primary_contact_name: 'Diego Berrio',
+    primary_contact_email: 'admin@replyos.com',
+    primary_contact_phone: '+34600000000',
+    is_active: true,
+    created_by: 'admin-replyos-001',
+    created_at: '2026-04-21T07:21:05.334Z',
+    updated_at: '2026-04-23T10:00:00.000Z',
+  },
+  message: 'Business profile fetched',
+};

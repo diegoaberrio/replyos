@@ -1,0 +1,177 @@
+export const mockConversationsResponse = {
+  success: true,
+  data: {
+    items: [
+      {
+        id: 'conv-001',
+        business_profile_id: 'business-001',
+        public_identifier: 'public-conv-001',
+        visitor_name: 'Laura Gómez',
+        visitor_email: 'laura@email.com',
+        visitor_phone: '+34600111222',
+        source_channel: 'web',
+        started_at: '2026-04-23T08:30:00.000Z',
+        last_message_at: '2026-04-23T08:41:00.000Z',
+        status: 'converted',
+        detected_intent: 'ready_to_advance',
+        result: 'commercial_request_created',
+        summary:
+          'La visitante pidió información, compartió datos y registró una reunión.',
+        created_at: '2026-04-23T08:30:00.000Z',
+        updated_at: '2026-04-23T08:41:00.000Z',
+      },
+      {
+        id: 'conv-002',
+        business_profile_id: 'business-001',
+        public_identifier: 'public-conv-002',
+        visitor_name: 'Carlos Pérez',
+        visitor_email: 'carlos@email.com',
+        visitor_phone: '+34600999888',
+        source_channel: 'web',
+        started_at: '2026-04-23T09:12:00.000Z',
+        last_message_at: '2026-04-23T09:18:00.000Z',
+        status: 'in_follow_up',
+        detected_intent: 'commercial_interest',
+        result: 'interest_without_closure',
+        summary:
+          'Mostró interés comercial pero aún no cerró una solicitud de contacto.',
+        created_at: '2026-04-23T09:12:00.000Z',
+        updated_at: '2026-04-23T09:18:00.000Z',
+      },
+      {
+        id: 'conv-003',
+        business_profile_id: 'business-001',
+        public_identifier: 'public-conv-003',
+        visitor_name: 'Marta Ruiz',
+        visitor_email: 'marta@email.com',
+        visitor_phone: null,
+        source_channel: 'web',
+        started_at: '2026-04-23T10:05:00.000Z',
+        last_message_at: '2026-04-23T10:08:00.000Z',
+        status: 'closed_no_conversion',
+        detected_intent: 'information',
+        result: 'no_conversion',
+        summary:
+          'Consulta informativa sin interés claro en avanzar a una acción comercial.',
+        created_at: '2026-04-23T10:05:00.000Z',
+        updated_at: '2026-04-23T10:08:00.000Z',
+      },
+    ],
+  },
+};
+
+export const mockConversationDetails = {
+  'conv-001': {
+    success: true,
+    data: {
+      conversation: {
+        id: 'conv-001',
+        business_profile_id: 'business-001',
+        public_identifier: 'public-conv-001',
+        visitor_name: 'Laura Gómez',
+        visitor_email: 'laura@email.com',
+        visitor_phone: '+34600111222',
+        source_channel: 'web',
+        started_at: '2026-04-23T08:30:00.000Z',
+        last_message_at: '2026-04-23T08:41:00.000Z',
+        status: 'converted',
+        detected_intent: 'ready_to_advance',
+        result: 'commercial_request_created',
+        summary:
+          'La visitante pidió información, compartió datos y registró una reunión.',
+        notes: null,
+        closed_at: null,
+        created_at: '2026-04-23T08:30:00.000Z',
+        updated_at: '2026-04-23T08:41:00.000Z',
+      },
+      messages: [
+        {
+          id: 'msg-001',
+          conversation_id: 'conv-001',
+          sender_type: 'visitor',
+          message_text:
+            'Hola, quiero saber cómo funciona ReplyOS y si puedo agendar una demo.',
+          message_order: 1,
+          model_name: null,
+          created_at: '2026-04-23T08:30:10.000Z',
+        },
+        {
+          id: 'msg-002',
+          conversation_id: 'conv-001',
+          sender_type: 'agent',
+          message_text:
+            'Claro. ReplyOS ayuda a responder consultas, captar leads y registrar solicitudes comerciales. Si quieres, puedo tomar tus datos para una reunión.',
+          message_order: 2,
+          model_name: 'mock-agent-v1',
+          created_at: '2026-04-23T08:30:25.000Z',
+        },
+        {
+          id: 'msg-003',
+          conversation_id: 'conv-001',
+          sender_type: 'visitor',
+          message_text:
+            'Perfecto, me interesa una reunión el viernes por la mañana.',
+          message_order: 3,
+          model_name: null,
+          created_at: '2026-04-23T08:31:02.000Z',
+        },
+        {
+          id: 'msg-004',
+          conversation_id: 'conv-001',
+          sender_type: 'agent',
+          message_text:
+            'Genial. Ya dejé registrada tu solicitud comercial con preferencia de reunión.',
+          message_order: 4,
+          model_name: 'mock-agent-v1',
+          created_at: '2026-04-23T08:31:20.000Z',
+        },
+      ],
+    },
+  },
+  'conv-002': {
+    success: true,
+    data: {
+      conversation: {
+        id: 'conv-002',
+        business_profile_id: 'business-001',
+        public_identifier: 'public-conv-002',
+        visitor_name: 'Carlos Pérez',
+        visitor_email: 'carlos@email.com',
+        visitor_phone: '+34600999888',
+        source_channel: 'web',
+        started_at: '2026-04-23T09:12:00.000Z',
+        last_message_at: '2026-04-23T09:18:00.000Z',
+        status: 'in_follow_up',
+        detected_intent: 'commercial_interest',
+        result: 'interest_without_closure',
+        summary:
+          'Mostró interés comercial pero aún no cerró una solicitud de contacto.',
+        notes: null,
+        closed_at: null,
+        created_at: '2026-04-23T09:12:00.000Z',
+        updated_at: '2026-04-23T09:18:00.000Z',
+      },
+      messages: [
+        {
+          id: 'msg-101',
+          conversation_id: 'conv-002',
+          sender_type: 'visitor',
+          message_text: 'Quiero saber precios y tiempos de implementación.',
+          message_order: 1,
+          model_name: null,
+          created_at: '2026-04-23T09:12:20.000Z',
+        },
+        {
+          id: 'msg-102',
+          conversation_id: 'conv-002',
+          sender_type: 'agent',
+          message_text:
+            'Puedo orientarte sobre el alcance inicial y, si te interesa, registrar tus datos para continuar.',
+          message_order: 2,
+          model_name: 'mock-agent-v1',
+          created_at: '2026-04-23T09:12:45.000Z',
+        },
+      ],
+    },
+  },
+};

@@ -1,0 +1,47 @@
+﻿# Dependencies
+node_modules/
+*/node_modules/
+
+# Builds
+dist/
+build/
+*/dist/
+*/build/
+
+# Environment files
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+*.local
+
+# Allow safe example env files
+!.env.example
+!*.env.example
+!*/.env.example
+!*/.env.*.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Cloudflare / Wrangler local state
+.wrangler/
+*/.wrangler/
+
+# Database / temporary files
+*.sqlite
+*.sqlite3
+*.db
+tmp/
+temp/
