@@ -9383,3 +9383,163 @@ canvas {
 .chat-messages--focus-feed .message-bubble:last-child {
   scroll-margin-bottom: 18px;
 }
+/* =========================================================
+   [PUBLIC CHAT BOTTOM SHEET]
+   Used by: PublicChatPage.jsx.
+   Bottom sheet móvil para formularios de Lead y Agenda.
+   Mantiene el chat como protagonista y evita capturas agresivas.
+   ========================================================= */
+
+.accordion-card--recommended {
+  border-color: rgba(106, 227, 255, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(106, 227, 255, 0.08),
+    0 18px 44px rgba(106, 227, 255, 0.08);
+}
+
+.accordion-card--recommended .accordion-trigger {
+  background:
+    radial-gradient(circle at left, rgba(106, 227, 255, 0.12), transparent 38%),
+    rgba(255, 255, 255, 0.055);
+}
+
+.mobile-bottom-sheet-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  display: none;
+}
+
+.mobile-bottom-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(5px);
+  animation: replyos-overlay-enter var(--duration-med) var(--ease-premium) both;
+}
+
+.mobile-bottom-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(86vh, 760px);
+  overflow-y: auto;
+  padding: 10px 16px max(18px, env(safe-area-inset-bottom));
+  border: 1px solid rgba(106, 227, 255, 0.16);
+  border-bottom: 0;
+  border-radius: 28px 28px 0 0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(106, 227, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 90% 10%, rgba(124, 92, 255, 0.14), transparent 32%),
+    linear-gradient(180deg, rgba(18, 28, 46, 0.98), rgba(10, 18, 32, 0.96));
+  box-shadow:
+    0 -22px 60px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(106, 227, 255, 0.06);
+  animation: replyos-bottom-sheet-enter var(--duration-med) var(--ease-premium) both;
+}
+
+.mobile-bottom-sheet__handle {
+  width: 44px;
+  height: 5px;
+  margin: 2px auto 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.mobile-bottom-sheet__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.mobile-bottom-sheet__header h3 {
+  margin: 10px 0 6px;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.mobile-bottom-sheet__header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.mobile-bottom-sheet__close {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.mobile-bottom-sheet__body {
+  padding-top: 16px;
+}
+
+.mobile-sheet-form {
+  margin-top: 0;
+}
+
+@keyframes replyos-bottom-sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-bottom-sheet-layer {
+    display: block;
+  }
+
+  .desktop-flow-form {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-sheet-layer {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .mobile-bottom-sheet {
+    max-height: 88vh;
+    padding-inline: 14px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .mobile-bottom-sheet__header {
+    grid-template-columns: minmax(0, 1fr) 38px;
+  }
+
+  .mobile-bottom-sheet__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-bottom-sheet,
+  .mobile-bottom-sheet-backdrop {
+    animation: none !important;
+  }
+}

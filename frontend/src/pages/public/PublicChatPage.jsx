@@ -70,11 +70,11 @@ function PublicChatPage() {
 
   const [openAccordion, setOpenAccordion] = useState('contact');
   const [floatingAction, setFloatingAction] = useState(null);
+  const [activeSheet, setActiveSheet] = useState(null);
+  const [activeFlowTarget, setActiveFlowTarget] = useState(null);
 
   const chatComposerRef = useRef(null);
   const chatMessagesRef = useRef(null);
-  const leadSectionRef = useRef(null);
-  const requestSectionRef = useRef(null);
 
   function scrollToElement(element) {
     if (!element) {
@@ -136,6 +136,17 @@ function PublicChatPage() {
     setFloatingAction(null);
   }
 
+  function closeSheet() {
+    setActiveSheet(null);
+  }
+
+  function openSheet(type) {
+    if (type === 'lead' || type === 'agenda') {
+      setActiveSheet(type);
+      setFloatingAction(null);
+    }
+  }
+
   function handleFloatingActionClick() {
     if (!floatingAction) {
       return;
@@ -143,15 +154,13 @@ function PublicChatPage() {
 
     if (floatingAction.type === 'lead') {
       setOpenAccordion('lead');
-      window.setTimeout(() => scrollToElement(leadSectionRef.current), 180);
-      setFloatingAction(null);
+      openSheet('lead');
       return;
     }
 
     if (floatingAction.type === 'agenda') {
       setOpenAccordion('agenda');
-      window.setTimeout(() => scrollToElement(requestSectionRef.current), 180);
-      setFloatingAction(null);
+      openSheet('agenda');
       return;
     }
 
@@ -173,17 +182,20 @@ function PublicChatPage() {
 
     if (safeHints.next_recommended_step === 'request') {
       setOpenAccordion('agenda');
+      setActiveFlowTarget('agenda');
       showFloatingAction('agenda');
       return;
     }
 
     if (safeHints.next_recommended_step === 'lead') {
       setOpenAccordion('lead');
+      setActiveFlowTarget('lead');
       showFloatingAction('lead');
       return;
     }
 
     setOpenAccordion('contact');
+    setActiveFlowTarget(null);
   }
 
   useEffect(() => {
@@ -388,7 +400,8 @@ function PublicChatPage() {
     if (!leadForm.email.trim() && !leadForm.phone.trim()) {
       setErrorMessage('Debes indicar al menos email o teléfono.');
       setOpenAccordion('lead');
-      showFloatingAction('lead');
+      setActiveFlowTarget('lead');
+      openSheet('lead');
       return;
     }
 
@@ -402,13 +415,16 @@ function PublicChatPage() {
 
       setSuccessMessage('Tus datos han quedado registrados correctamente.');
       setOpenAccordion('agenda');
+      setActiveFlowTarget('agenda');
+      closeSheet();
       showFloatingAction('agenda');
     } catch (error) {
       setErrorMessage(
         error?.error?.message || 'No se pudieron registrar tus datos.'
       );
       setOpenAccordion('lead');
-      showFloatingAction('lead');
+      setActiveFlowTarget('lead');
+      openSheet('lead');
     } finally {
       setIsLeadSubmitting(false);
     }
@@ -442,13 +458,16 @@ function PublicChatPage() {
         'Tu solicitud comercial ha sido registrada correctamente.'
       );
       setOpenAccordion('contact');
+      setActiveFlowTarget(null);
+      closeSheet();
       showFloatingAction('chat');
     } catch (error) {
       setErrorMessage(
         error?.error?.message || 'No se pudo registrar la solicitud comercial.'
       );
       setOpenAccordion('agenda');
-      showFloatingAction('agenda');
+      setActiveFlowTarget('agenda');
+      openSheet('agenda');
     } finally {
       setIsRequestSubmitting(false);
     }
@@ -457,6 +476,143 @@ function PublicChatPage() {
   function handleRestartConversation() {
     clearPublicChatSession();
     window.location.reload();
+  }
+
+  function renderLeadForm(formClassName = 'settings-form') {
+    return (
+      <form className={formClassName} onSubmit={handleLeadSubmit}>
+        <div className="settings-form-grid">
+          <label className="field-group field-group--full">
+            <span>Nombre completo</span>
+            <input
+              name="full_name"
+              value={leadForm.full_name}
+              onChange={handleLeadChange}
+            />
+          </label>
+
+          <label className="field-group">
+            <span>Email</span>
+            <input
+              name="email"
+              type="email"
+              value={leadForm.email}
+              onChange={handleLeadChange}
+            />
+          </label>
+
+          <label className="field-group">
+            <span>Teléfono</span>
+            <input
+              name="phone"
+              value={leadForm.phone}
+              onChange={handleLeadChange}
+            />
+          </label>
+
+          <label className="field-group field-group--full">
+            <span>Empresa</span>
+            <input
+              name="company_name"
+              value={leadForm.company_name}
+              onChange={handleLeadChange}
+            />
+          </label>
+
+          <label className="field-group field-group--full">
+            <span>Notas</span>
+            <textarea
+              name="notes"
+              rows="3"
+              value={leadForm.notes}
+              onChange={handleLeadChange}
+            />
+          </label>
+        </div>
+
+        <div className="settings-form-actions">
+          <button
+            className="primary-btn"
+            type="submit"
+            disabled={isLeadSubmitting}
+          >
+            {isLeadSubmitting ? 'Registrando...' : 'Registrar datos'}
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function renderRequestForm(formClassName = 'settings-form') {
+    return (
+      <form className={formClassName} onSubmit={handleRequestSubmit}>
+        <div className="settings-form-grid">
+          <label className="field-group">
+            <span>Tipo</span>
+            <select
+              name="request_type"
+              value={requestForm.request_type}
+              onChange={handleRequestChange}
+            >
+              <option value="contact_request">Solicitud de contacto</option>
+              <option value="call">Llamada</option>
+              <option value="meeting">Reunión</option>
+              <option value="visit">Visita</option>
+            </select>
+          </label>
+
+          <label className="field-group">
+            <span>Fecha preferida</span>
+            <input
+              name="preferred_date"
+              type="date"
+              value={requestForm.preferred_date}
+              onChange={handleRequestChange}
+            />
+          </label>
+
+          <label className="field-group">
+            <span>Hora preferida</span>
+            <input
+              name="preferred_time"
+              type="time"
+              value={requestForm.preferred_time}
+              onChange={handleRequestChange}
+            />
+          </label>
+
+          <label className="field-group">
+            <span>Franja</span>
+            <input
+              name="preferred_time_range"
+              value={requestForm.preferred_time_range}
+              onChange={handleRequestChange}
+              placeholder="Ej. mañana"
+            />
+          </label>
+
+          <label className="field-group field-group--full">
+            <span>Detalles</span>
+            <textarea
+              name="details"
+              rows="3"
+              value={requestForm.details}
+              onChange={handleRequestChange}
+            />
+          </label>
+        </div>
+
+        <div className="settings-form-actions">
+          <button
+            className="primary-btn"
+            type="submit"
+            disabled={isRequestSubmitting}
+          >
+            {isRequestSubmitting ? 'Registrando...' : 'Registrar solicitud'}
+          </button>
+        </div>
+      </form>
+    );
   }
 
   return (
@@ -691,8 +847,11 @@ function PublicChatPage() {
             </section>
 
             <section
-              ref={leadSectionRef}
-              className="accordion-card accordion-card--flow"
+              className={`accordion-card accordion-card--flow ${
+                activeFlowTarget === 'lead'
+                  ? 'accordion-card--recommended'
+                  : ''
+              }`}
             >
               <button
                 type="button"
@@ -729,66 +888,7 @@ function PublicChatPage() {
                   contacto contigo.
                 </p>
 
-                <form className="settings-form" onSubmit={handleLeadSubmit}>
-                  <div className="settings-form-grid">
-                    <label className="field-group field-group--full">
-                      <span>Nombre completo</span>
-                      <input
-                        name="full_name"
-                        value={leadForm.full_name}
-                        onChange={handleLeadChange}
-                      />
-                    </label>
-
-                    <label className="field-group">
-                      <span>Email</span>
-                      <input
-                        name="email"
-                        type="email"
-                        value={leadForm.email}
-                        onChange={handleLeadChange}
-                      />
-                    </label>
-
-                    <label className="field-group">
-                      <span>Teléfono</span>
-                      <input
-                        name="phone"
-                        value={leadForm.phone}
-                        onChange={handleLeadChange}
-                      />
-                    </label>
-
-                    <label className="field-group field-group--full">
-                      <span>Empresa</span>
-                      <input
-                        name="company_name"
-                        value={leadForm.company_name}
-                        onChange={handleLeadChange}
-                      />
-                    </label>
-
-                    <label className="field-group field-group--full">
-                      <span>Notas</span>
-                      <textarea
-                        name="notes"
-                        rows="3"
-                        value={leadForm.notes}
-                        onChange={handleLeadChange}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="settings-form-actions">
-                    <button
-                      className="primary-btn"
-                      type="submit"
-                      disabled={isLeadSubmitting}
-                    >
-                      {isLeadSubmitting ? 'Registrando...' : 'Registrar datos'}
-                    </button>
-                  </div>
-                </form>
+                {renderLeadForm('settings-form desktop-flow-form')}
 
                 {!canShowLeadForm ? (
                   <p className="accordion-hint">
@@ -800,8 +900,11 @@ function PublicChatPage() {
             </section>
 
             <section
-              ref={requestSectionRef}
-              className="accordion-card accordion-card--flow"
+              className={`accordion-card accordion-card--flow ${
+                activeFlowTarget === 'agenda'
+                  ? 'accordion-card--recommended'
+                  : ''
+              }`}
             >
               <button
                 type="button"
@@ -838,77 +941,7 @@ function PublicChatPage() {
                   llamada, reunión o visita.
                 </p>
 
-                <form className="settings-form" onSubmit={handleRequestSubmit}>
-                  <div className="settings-form-grid">
-                    <label className="field-group">
-                      <span>Tipo</span>
-                      <select
-                        name="request_type"
-                        value={requestForm.request_type}
-                        onChange={handleRequestChange}
-                      >
-                        <option value="contact_request">
-                          Solicitud de contacto
-                        </option>
-                        <option value="call">Llamada</option>
-                        <option value="meeting">Reunión</option>
-                        <option value="visit">Visita</option>
-                      </select>
-                    </label>
-
-                    <label className="field-group">
-                      <span>Fecha preferida</span>
-                      <input
-                        name="preferred_date"
-                        type="date"
-                        value={requestForm.preferred_date}
-                        onChange={handleRequestChange}
-                      />
-                    </label>
-
-                    <label className="field-group">
-                      <span>Hora preferida</span>
-                      <input
-                        name="preferred_time"
-                        type="time"
-                        value={requestForm.preferred_time}
-                        onChange={handleRequestChange}
-                      />
-                    </label>
-
-                    <label className="field-group">
-                      <span>Franja</span>
-                      <input
-                        name="preferred_time_range"
-                        value={requestForm.preferred_time_range}
-                        onChange={handleRequestChange}
-                        placeholder="Ej. mañana"
-                      />
-                    </label>
-
-                    <label className="field-group field-group--full">
-                      <span>Detalles</span>
-                      <textarea
-                        name="details"
-                        rows="3"
-                        value={requestForm.details}
-                        onChange={handleRequestChange}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="settings-form-actions">
-                    <button
-                      className="primary-btn"
-                      type="submit"
-                      disabled={isRequestSubmitting}
-                    >
-                      {isRequestSubmitting
-                        ? 'Registrando...'
-                        : 'Registrar solicitud'}
-                    </button>
-                  </div>
-                </form>
+                {renderRequestForm('settings-form desktop-flow-form')}
 
                 {!canShowRequestForm ? (
                   <p className="accordion-hint">
@@ -947,6 +980,65 @@ function PublicChatPage() {
           >
             ×
           </button>
+        </div>
+      ) : null}
+
+      {activeSheet ? (
+        <div
+          className="mobile-bottom-sheet-layer"
+          role="dialog"
+          aria-modal="true"
+          aria-label={
+            activeSheet === 'lead'
+              ? 'Formulario de datos de contacto'
+              : 'Formulario de agenda'
+          }
+        >
+          <button
+            className="mobile-bottom-sheet-backdrop"
+            type="button"
+            aria-label="Cerrar formulario"
+            onClick={closeSheet}
+          />
+
+          <section className="mobile-bottom-sheet">
+            <div className="mobile-bottom-sheet__handle" aria-hidden="true" />
+
+            <header className="mobile-bottom-sheet__header">
+              <div>
+                <span className="mini-chip">
+                  {activeSheet === 'lead' ? 'Datos de contacto' : 'Agenda'}
+                </span>
+
+                <h3>
+                  {activeSheet === 'lead'
+                    ? 'Deja tus datos sin compromiso'
+                    : 'Preferencia de contacto'}
+                </h3>
+
+                <p>
+                  {activeSheet === 'lead'
+                    ? 'Solo necesitamos email o teléfono para que el negocio pueda continuar contigo.'
+                    : 'Indica cuándo y cómo prefieres que continúe la conversación.'}
+                </p>
+              </div>
+
+              <button
+                className="mobile-bottom-sheet__close"
+                type="button"
+                onClick={closeSheet}
+                aria-label="Cerrar formulario"
+              >
+                ×
+              </button>
+            </header>
+
+            <div className="mobile-bottom-sheet__body">
+              {activeSheet === 'lead'
+                ? renderLeadForm('settings-form mobile-sheet-form')
+                : renderRequestForm('settings-form mobile-sheet-form')}
+            </div>
+          </section>
         </div>
       ) : null}
     </div>
